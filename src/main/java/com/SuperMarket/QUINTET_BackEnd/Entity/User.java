@@ -31,26 +31,10 @@ public class User {
 //    private String address;
 
 
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    @JoinTable(name = "user_roles",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "role_id"))
-//    private Set<Role> roles=new HashSet<>();
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 
-
-//    public User(long id, String username, String password, List<RentalCars> rentalCars, String email, String phone, String address) {
-//        this.id = id;
-//        this.username = username;
-//        this.password = password;
-//        this.rentalCars = rentalCars;
-//        this.email = email;
-//        this.phone = phone;
-//        this.address = address;
-//    }
 
 
     public User(long id, String username, String password, List<UserCart> userCartList, Role role) {
