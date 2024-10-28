@@ -1,8 +1,10 @@
 package com.SuperMarket.QUINTET_BackEnd.Controller;
 
+import com.SuperMarket.QUINTET_BackEnd.Entity.Order;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
 import com.SuperMarket.QUINTET_BackEnd.Entity.UserCart;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
+import com.SuperMarket.QUINTET_BackEnd.Repository.OrderRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserCartRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
 import com.SuperMarket.QUINTET_BackEnd.Service.ProductService;
@@ -29,6 +31,9 @@ public class UserController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OrderRepo orderRepo;
 
     @GetMapping("/name")
     public ResponseEntity<String> getUser(){
@@ -92,6 +97,7 @@ public class UserController {
 
             // Find the cart entry to delete
             Optional<UserCart> existingCart = userCartRepo.findByUserAndProduct(user, product);
+
             if (existingCart.isPresent()) {
                 userCartRepo.delete(existingCart.get());
                 return new ResponseEntity<>("Removed from cart successfully", HttpStatus.OK);
@@ -101,6 +107,29 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to remove from cart: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/addToOrders/{userId}&{productId}&{price}")
+    public ResponseEntity<String> addToOrders(@PathVariable long userId, @PathVariable long productId, @PathVariable float price) {
+        try {
+
+            User user = userRepo.getReferenceById(userId);
+            Product product = productService.getById(productId);
+
+            Order order = new Order(price, user, product);
+            orderRepo.save(order);
+            removeFromCart(userId, productId);
+
+            return new ResponseEntity<>("Added to Orders Seccussfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to add to orders" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/orders/{userId}")
+    public ResponseEntity<List<Order>> getOrders(@PathVariable long userId) {
+        List<Order> orderList = orderRepo.findAllByuserId(userId);
+        return ResponseEntity.ok(orderList);
     }
 
 

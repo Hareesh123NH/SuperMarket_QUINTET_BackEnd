@@ -22,6 +22,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserCart> userCartList;
 
+
+
 //    @Column(nullable = false)
 //    private String email;
 //
@@ -34,6 +36,7 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
 
 
 
