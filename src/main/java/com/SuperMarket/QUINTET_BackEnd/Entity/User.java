@@ -23,7 +23,6 @@ public class User {
     private List<UserCart> userCartList;
 
 
-
 //    @Column(nullable = false)
 //    private String email;
 //
@@ -36,8 +35,6 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
-
-
 
 
     public User(long id, String username, String password, List<UserCart> userCartList, Role role) {

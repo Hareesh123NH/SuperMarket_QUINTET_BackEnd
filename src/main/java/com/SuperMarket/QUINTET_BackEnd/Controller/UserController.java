@@ -120,11 +120,16 @@ public class UserController {
             orderRepo.save(order);
             removeFromCart(userId, productId);
 
+            int count=(int)(price/product.getPrice());
+            product.setQuantity(product.getQuantity()-count);
+            productService.save(product);
+
             return new ResponseEntity<>("Added to Orders Seccussfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to add to orders" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/orders/{userId}")
     public ResponseEntity<List<Order>> getOrders(@PathVariable long userId) {
