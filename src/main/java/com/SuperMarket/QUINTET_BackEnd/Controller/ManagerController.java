@@ -56,7 +56,7 @@ public class ManagerController {
     @PostMapping("/register/{roleId}")
     public ResponseEntity<String> registerUser(@RequestBody UserDto userDto, @PathVariable int roleId) {
         try {
-            System.out.println(userDto.getName() + " " + userDto.getPassword());
+
             User user = new User();
             user.setUsername(userDto.getName());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -66,7 +66,8 @@ public class ManagerController {
 
             userService.saveUser(user);
             return new ResponseEntity<>("User register succussfully", HttpStatus.CREATED);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return new ResponseEntity<>("Registration failed" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -74,7 +75,6 @@ public class ManagerController {
     @GetMapping("/allorders")
     public ResponseEntity<List<Order>> getAllorders() {
         List<Order> orderList = orderRepo.findAll();
-
         return ResponseEntity.ok(orderList);
     }
 }
