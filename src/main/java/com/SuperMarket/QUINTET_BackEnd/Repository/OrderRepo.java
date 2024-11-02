@@ -4,6 +4,8 @@ import com.SuperMarket.QUINTET_BackEnd.Entity.Order;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +22,7 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
     Optional<Order> findById(Long aLong);
 
     Optional<Order> findByUserAndProduct(User user, Product product);
+
+    //    @Query("Select o from orders where o.order_status <> :orderStatus")
+    List<Order> findAllByorderStatusNot(String orderStatus);
 }

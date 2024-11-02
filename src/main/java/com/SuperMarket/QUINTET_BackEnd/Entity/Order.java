@@ -15,7 +15,7 @@ public class Order {
 
     private float price;
 
-    @JsonIgnore
+    //    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

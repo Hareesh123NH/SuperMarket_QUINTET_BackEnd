@@ -83,7 +83,7 @@ public class AuthController {
     public ResponseEntity<String> registerUser(@RequestBody UserDto userDto){
         try{
             User user=new User();
-            user.setUsername(userDto.getName());
+            user.setUsername(userDto.getUsername());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             Role role=rolesRepo.getReferenceById((long)1);

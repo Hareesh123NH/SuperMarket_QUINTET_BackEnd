@@ -9,6 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -22,19 +23,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserCart> userCartList;
 
-
-//    @Column(nullable = false)
-//    private String email;
-//
-//    @Column(nullable = false)
-//    private String phone;
-//
-//    private String address;
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private UserProfile userProfile;
 
 
     public User(long id, String username, String password, List<UserCart> userCartList, Role role) {
@@ -48,7 +43,6 @@ public class User {
     public User() {
         super();
     }
-
 
     public long getId() {
         return id;
@@ -74,38 +68,6 @@ public class User {
         this.password = password;
     }
 
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public String getPhone() {
-//        return phone;
-//    }
-//
-//    public void setPhone(String phone) {
-//        this.phone = phone;
-//    }
-//
-//    public String getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(String address) {
-//        this.address = address;
-//    }
-
-    public List<UserCart> getRentalCars() {
-        return userCartList;
-    }
-
-    public void setRentalCars(List<UserCart> userCartList) {
-        this.userCartList = userCartList;
-    }
-
     public Role getRole() {
         return role;
     }
@@ -114,15 +76,19 @@ public class User {
         this.role = role;
     }
 
-    //    @Override
-//    public String toString() {
-//        return "User{" +
-//                "id=" + id +
-//                ", username='" + username + '\'' +
-//                ", password='" + password + '\'' +
-//                ", email='" + email + '\'' +
-//                ", phone='" + phone + '\'' +
-//                ", address='" + address + '\'' +
-//                '}';
-//    }
+    public List<UserCart> getUserCartList() {
+        return userCartList;
+    }
+
+    public void setUserCartList(List<UserCart> userCartList) {
+        this.userCartList = userCartList;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 }

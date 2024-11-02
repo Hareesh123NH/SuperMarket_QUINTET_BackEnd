@@ -4,6 +4,7 @@ import com.SuperMarket.QUINTET_BackEnd.Dto.UserDto;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Order;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Role;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
+import com.SuperMarket.QUINTET_BackEnd.Entity.UserProfile;
 import com.SuperMarket.QUINTET_BackEnd.Repository.OrderRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.RolesRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
@@ -58,11 +59,19 @@ public class ManagerController {
         try {
 
             User user = new User();
-            user.setUsername(userDto.getName());
+            user.setUsername(userDto.getUsername());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             Role role = rolesRepo.getReferenceById((long) roleId);
             user.setRole(role);
+
+            UserProfile userProfile = new UserProfile();
+            userProfile.setFullName(userDto.getFullName());
+            userProfile.setPhoneNumber(userDto.getPhoneNumber());
+            userProfile.setAddress(userDto.getAddress());
+            userProfile.setEmail(userDto.getEmail());
+
+            user.setUserProfile(userProfile);
 
             userService.saveUser(user);
             return new ResponseEntity<>("User register succussfully", HttpStatus.CREATED);
@@ -74,7 +83,8 @@ public class ManagerController {
 
     @GetMapping("/allorders")
     public ResponseEntity<List<Order>> getAllorders() {
-        List<Order> orderList = orderRepo.findAll();
+        List<Order> orderList = orderRepo.findAllByorderStatusNot("Pending");
         return ResponseEntity.ok(orderList);
     }
+
 }
