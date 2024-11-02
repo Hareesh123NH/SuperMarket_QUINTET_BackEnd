@@ -7,9 +7,12 @@ import com.SuperMarket.QUINTET_BackEnd.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/clerk")
@@ -23,7 +26,12 @@ public class ClerkController {
 
     @GetMapping("/name")
     public ResponseEntity<String> welcome(){
-        return ResponseEntity.ok("WelCome Clerk");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authentication: " + auth);
+        if (auth != null && auth.isAuthenticated()) {
+            return ResponseEntity.ok("Authenticated as " + auth.getName());
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authenticated");
     }
 
     @GetMapping("/orders")
@@ -32,9 +40,19 @@ public class ClerkController {
         return ResponseEntity.ok(orderList);
     }
 
+    @GetMapping("/orders/{status}")
+    public ResponseEntity<List<Order>> getAllPending(@PathVariable String status) {
+        List<Order> orderList = orderRepo.findAllByorderStatus(status);
+        return ResponseEntity.ok(orderList);
+    }
+
     @PutMapping("/approve/{orderId}")
     public ResponseEntity<String> orderApprove(@PathVariable long orderId) {
         Order order = orderRepo.getReferenceById(orderId);
+        Optional<Order> isExit = orderRepo.findById(orderId);
+        if (isExit.isEmpty()) {
+            return new ResponseEntity<>("Order Not Availble", HttpStatus.NOT_FOUND);
+        }
         if (!order.getOrderStatus().equals("Pending")) {
             return new ResponseEntity<>("Already Reacted", HttpStatus.ALREADY_REPORTED);
         }
@@ -46,6 +64,10 @@ public class ClerkController {
     @PutMapping("/cancel/{orderId}")
     public ResponseEntity<String> orderCancelled(@PathVariable long orderId) {
         Order order = orderRepo.getReferenceById(orderId);
+        Optional<Order> isExit = orderRepo.findById(orderId);
+        if (isExit.isEmpty()) {
+            return new ResponseEntity<>("Order Not Availble", HttpStatus.NOT_FOUND);
+        }
         if (!order.getOrderStatus().equals("Pending")) {
             return new ResponseEntity<>("Already Reacted", HttpStatus.ALREADY_REPORTED);
         }

@@ -130,6 +130,27 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/cancelOrder/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable long orderId) {
+        try {
+
+            Optional<Order> existingOrder = orderRepo.findById(orderId);
+
+            if (existingOrder.isPresent()) {
+                Order order = existingOrder.get();
+                Product product = order.getProduct();
+                int count = (int) (order.getPrice() / product.getPrice());
+                product.setQuantity(product.getQuantity() + count);
+                orderRepo.delete(existingOrder.get());
+                return new ResponseEntity<>("Cancel Order successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("This product is not in your orders", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to cancel order " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @GetMapping("/orders/{userId}")
     public ResponseEntity<List<Order>> getOrders(@PathVariable long userId) {

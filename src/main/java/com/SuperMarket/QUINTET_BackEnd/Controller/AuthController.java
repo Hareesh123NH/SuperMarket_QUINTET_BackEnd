@@ -7,6 +7,8 @@ import com.SuperMarket.QUINTET_BackEnd.Entity.User;
 import com.SuperMarket.QUINTET_BackEnd.Repository.RolesRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
 import com.SuperMarket.QUINTET_BackEnd.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.LoginException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -46,7 +47,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/name")
-    public ResponseEntity<String> getName() {
+    public ResponseEntity<String> welcome() {
         return ResponseEntity.ok("Welcome Authuntication");
     }
 
@@ -58,6 +59,10 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            HttpSession session = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest().getSession(true);
+
+            System.out.println("Session ID after authentication: " + session.getId());
 
             String role = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                     .findFirst().orElseThrow(() -> new RuntimeException("No role for this user"));
@@ -89,14 +94,6 @@ public class AuthController {
         } catch (Exception e) {
             return new ResponseEntity<>("Registration failed"+e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("/profile")
-    public ResponseEntity<User> getUser(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-        User user = userRepo.findUserByUsername(username);
-        return ResponseEntity.ok(user);
     }
 
 }

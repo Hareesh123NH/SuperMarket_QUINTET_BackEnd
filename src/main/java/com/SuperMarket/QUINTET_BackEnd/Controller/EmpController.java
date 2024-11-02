@@ -1,15 +1,12 @@
 package com.SuperMarket.QUINTET_BackEnd.Controller;
 
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
-import com.SuperMarket.QUINTET_BackEnd.Entity.Role;
-import com.SuperMarket.QUINTET_BackEnd.Entity.User;
 import com.SuperMarket.QUINTET_BackEnd.Repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.List;
 
 @RestController
