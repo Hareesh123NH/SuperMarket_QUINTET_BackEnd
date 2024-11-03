@@ -12,4 +12,6 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
     List<Product> findAllBycategory(String category);
 
     List<Product> findByQuantityLessThan(int quantity);
+
+    List<Product> findAllByOrderByQuantityAsc();
 }

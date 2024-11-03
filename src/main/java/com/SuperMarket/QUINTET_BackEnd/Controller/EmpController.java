@@ -1,7 +1,9 @@
 package com.SuperMarket.QUINTET_BackEnd.Controller;
 
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
+import com.SuperMarket.QUINTET_BackEnd.Entity.User;
 import com.SuperMarket.QUINTET_BackEnd.Repository.ProductRepo;
+import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,9 @@ public class EmpController {
 
     @Autowired
     private ProductRepo productRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @GetMapping("/name")
     public ResponseEntity<String> welcome(){
@@ -50,4 +55,32 @@ public class EmpController {
             return new ResponseEntity<>("Registration failed" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/allProducts")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> productList = productRepo.findAllByOrderByQuantityAsc();
+        return ResponseEntity.ok(productList);
+    }
+
+    @PutMapping("/updateProduct/{productId}")
+    public ResponseEntity<String> updateProduct(@PathVariable long productId, @RequestBody Product product) {
+        Product oldproduct = productRepo.getReferenceById(productId);
+
+        oldproduct.setQuantity(product.getQuantity());
+        oldproduct.setName(product.getName());
+        oldproduct.setCategory(product.getCategory());
+        oldproduct.setPrice(product.getPrice());
+
+        productRepo.save(oldproduct);
+
+        return ResponseEntity.ok("Updated Successfully");
+    }
+
+//    @DeleteMapping("/removeProduct/{productId}")
+//    public ResponseEntity<String> removeProduct(@PathVariable long productId) {
+//        Product product = productRepo.getReferenceById(productId);
+//
+//        productRepo.delete(product);
+//        return ResponseEntity.ok("Removed Successfully");
+//    }
 }

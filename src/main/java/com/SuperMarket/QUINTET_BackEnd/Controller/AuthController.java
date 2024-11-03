@@ -4,6 +4,7 @@ import com.SuperMarket.QUINTET_BackEnd.Dto.LoginDto;
 import com.SuperMarket.QUINTET_BackEnd.Dto.UserDto;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Role;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
+import com.SuperMarket.QUINTET_BackEnd.Entity.UserProfile;
 import com.SuperMarket.QUINTET_BackEnd.Repository.RolesRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
 import com.SuperMarket.QUINTET_BackEnd.Service.UserService;
@@ -72,6 +73,7 @@ public class AuthController {
             User user=userService.findByname(authentication.getName());
             response.put("userId", String.valueOf(user.getId()));
             response.put("role", role);
+            response.put("details",user.toString());
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -88,6 +90,14 @@ public class AuthController {
 
             Role role=rolesRepo.getReferenceById((long)1);
             user.setRole(role);
+
+            UserProfile userProfile = new UserProfile();
+            userProfile.setFullName(userDto.getFullName());
+            userProfile.setPhoneNumber(userDto.getPhoneNumber());
+            userProfile.setAddress(userDto.getAddress());
+            userProfile.setEmail(userDto.getEmail());
+
+            user.setUserProfile(userProfile);
 
             userService.saveUser(user);
             return new ResponseEntity<>("User register succussfully", HttpStatus.CREATED);

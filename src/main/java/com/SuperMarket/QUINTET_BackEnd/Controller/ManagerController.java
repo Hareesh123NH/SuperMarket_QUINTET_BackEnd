@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/manager")
@@ -85,6 +86,38 @@ public class ManagerController {
     public ResponseEntity<List<Order>> getAllorders() {
         List<Order> orderList = orderRepo.findAllByorderStatusNot("Pending");
         return ResponseEntity.ok(orderList);
+    }
+
+    @PutMapping("/update/{profileId}")
+    public ResponseEntity<String> updateProfile(@PathVariable long profileId, @RequestBody UserProfile userProfile) {
+        User user = userRepo.findByprofileId(profileId);
+        UserProfile userdetails = user.getUserProfile();
+
+        userdetails.setEmail(userProfile.getEmail());
+        userdetails.setAddress(userProfile.getAddress());
+        userdetails.setPhoneNumber(userProfile.getPhoneNumber());
+        userdetails.setFullName(userProfile.getFullName());
+
+        user.setUserProfile(userdetails);
+
+        userRepo.save(user);
+        return ResponseEntity.ok("Updated Successfully");
+    }
+
+    @DeleteMapping("/remove/{profileId}")
+    public ResponseEntity<String> removeProfile(@PathVariable long profileId) {
+        try {
+
+            Optional<User> isExist = userRepo.findUserByprofileId(profileId);
+            if (isExist.isEmpty()) {
+                return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
+            }
+            userRepo.delete(isExist.get());
+            return ResponseEntity.ok("Successfully Deleted User");
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to delete User :" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
 }
