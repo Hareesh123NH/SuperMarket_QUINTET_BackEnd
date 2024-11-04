@@ -3,7 +3,9 @@ package com.SuperMarket.QUINTET_BackEnd.Repository;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Order;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,4 +27,10 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 
     //    @Query("Select o from orders where o.order_status <> :orderStatus")
     List<Order> findAllByorderStatusNot(String orderStatus);
+
+
+//    @Transactional
+//    @Modifying
+//    @Query("UPDATE Order o SET o.orderStatus = 'BillGenerated' WHERE o.id = :id")
+//    void updateOrderStatusToBillGeneratedById(@Param("id") long id);
 }

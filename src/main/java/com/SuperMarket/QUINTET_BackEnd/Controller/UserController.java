@@ -109,18 +109,18 @@ public class UserController {
         }
     }
 
-    @PostMapping("/addToOrders/{userId}&{productId}&{price}")
-    public ResponseEntity<String> addToOrders(@PathVariable long userId, @PathVariable long productId, @PathVariable float price) {
+    @PostMapping("/addToOrders/{userId}&{productId}&{count}")
+    public ResponseEntity<String> addToOrders(@PathVariable long userId, @PathVariable long productId, @PathVariable int count) {
         try {
 
             User user = userRepo.getReferenceById(userId);
             Product product = productService.getById(productId);
 
-            Order order = new Order(price, user, product);
+            Order order = new Order(count, user, product);
+            order.setPrice(count * product.getPrice());
+            order.setUnitPrice(product.getPrice());
             orderRepo.save(order);
             removeFromCart(userId, productId);
-
-            int count=(int)(price/product.getPrice());
             product.setQuantity(product.getQuantity()-count);
             productService.save(product);
 
@@ -139,8 +139,9 @@ public class UserController {
             if (existingOrder.isPresent()) {
                 Order order = existingOrder.get();
                 Product product = order.getProduct();
-                int count = (int) (order.getPrice() / product.getPrice());
-                product.setQuantity(product.getQuantity() + count);
+
+                product.setQuantity(product.getQuantity() + order.getQuantity());
+
                 orderRepo.delete(existingOrder.get());
                 return new ResponseEntity<>("Cancel Order successfully", HttpStatus.OK);
             } else {

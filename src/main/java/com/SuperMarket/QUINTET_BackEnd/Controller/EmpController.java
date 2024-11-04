@@ -1,7 +1,9 @@
 package com.SuperMarket.QUINTET_BackEnd.Controller;
 
+import com.SuperMarket.QUINTET_BackEnd.Entity.Bills;
 import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
 import com.SuperMarket.QUINTET_BackEnd.Entity.User;
+import com.SuperMarket.QUINTET_BackEnd.Repository.BillRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.ProductRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class EmpController {
 
     @Autowired
     private ProductRepo productRepo;
+
+    @Autowired
+    private BillRepo billRepo;
 
     @Autowired
     private UserRepo userRepo;
@@ -83,4 +88,10 @@ public class EmpController {
 //        productRepo.delete(product);
 //        return ResponseEntity.ok("Removed Successfully");
 //    }
+@GetMapping("/allBills")
+public ResponseEntity<List<Bills>> getAllBills() {
+    List<Bills> billList = billRepo.findAll();
+    return ResponseEntity.ok(billList);
+}
+
 }

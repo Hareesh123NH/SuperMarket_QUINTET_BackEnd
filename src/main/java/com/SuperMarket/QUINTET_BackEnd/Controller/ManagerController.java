@@ -120,4 +120,20 @@ public class ManagerController {
 
     }
 
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteProfile(@PathVariable long userId) {
+        try {
+
+            Optional<User> isExist = userRepo.findById(userId);
+            if (isExist.isEmpty()) {
+                return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
+            }
+            userRepo.delete(isExist.get());
+            return ResponseEntity.ok("Successfully Deleted User");
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to delete User :" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

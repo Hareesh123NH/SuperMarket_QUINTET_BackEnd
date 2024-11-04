@@ -1,7 +1,7 @@
 package com.SuperMarket.QUINTET_BackEnd.Controller;
 
-import com.SuperMarket.QUINTET_BackEnd.Entity.Order;
-import com.SuperMarket.QUINTET_BackEnd.Entity.Product;
+import com.SuperMarket.QUINTET_BackEnd.Entity.*;
+import com.SuperMarket.QUINTET_BackEnd.Repository.BillRepo;
 import com.SuperMarket.QUINTET_BackEnd.Repository.OrderRepo;
 import com.SuperMarket.QUINTET_BackEnd.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,9 @@ public class ClerkController {
 
     @Autowired
     private OrderRepo orderRepo;
+
+    @Autowired
+    private BillRepo billRepo;
 
     @Autowired
     private ProductService productService;
@@ -82,5 +85,45 @@ public class ClerkController {
 
         return ResponseEntity.ok("Cancel Successfully");
     }
+
+    @PostMapping("/addBill")
+    public ResponseEntity<String> saveBills(@RequestBody Bills bill) {
+        try {
+            bill.getBillProducts().forEach(item -> item.setBills(bill));
+
+            billRepo.save(bill);
+            return new ResponseEntity<>("Bill register succussfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Registration failed" + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/generateBill/{orderId}")
+    public ResponseEntity<String> generateBill(@PathVariable long orderId) {
+        Order order = orderRepo.getReferenceById(orderId);
+        Optional<Order> isExit = orderRepo.findById(orderId);
+
+        if (isExit.isEmpty()) {
+            return new ResponseEntity<>("Order Not Availble", HttpStatus.NOT_FOUND);
+        }
+
+        order.setOrderStatus("BillGenerated");
+        orderRepo.save(order);
+        return ResponseEntity.ok("Bill Generated Successfully");
+    }
+
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<String> deleteorder(@PathVariable long orderId) {
+        Order order = orderRepo.getReferenceById(orderId);
+        Optional<Order> isExit = orderRepo.findById(orderId);
+
+        if (isExit.isEmpty()) {
+            return new ResponseEntity<>("Order Not Availble", HttpStatus.NOT_FOUND);
+        }
+
+        orderRepo.delete(order);
+        return ResponseEntity.ok("Order Deleted Successfully");
+    }
+
 
 }
