@@ -43,6 +43,12 @@ public class ClerkController {
         return ResponseEntity.ok(orderList);
     }
 
+    @GetMapping("/searchOrders/{search}")
+    public ResponseEntity<List<Order>> searchOrders(@PathVariable String search) {
+        List<Order> orderList = orderRepo.searchOrdersByUsernamePName(search);
+        return ResponseEntity.ok(orderList);
+    }
+
     @GetMapping("/orders/{status}")
     public ResponseEntity<List<Order>> getAllPending(@PathVariable String status) {
         List<Order> orderList = orderRepo.findAllByorderStatus(status);

@@ -136,4 +136,16 @@ public class ManagerController {
 
     }
 
+//    @GetMapping("/getAllusers")
+//    public ResponseEntity<List<User>> getAllUsers() {
+//        List<User> users = userRepo.findAll();
+//        return ResponseEntity.ok(users);
+//    }
+//
+//    @GetMapping("/getOrdersbyIds")
+//    public ResponseEntity<List<Order>> getOrdersbyids(@RequestParam List<Long> orderIds) {
+//        List<Order> orders = orderRepo.findAllById(orderIds);
+//        return ResponseEntity.ok((orders));
+//    }
+
 }

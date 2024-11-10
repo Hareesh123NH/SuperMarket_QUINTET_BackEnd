@@ -60,6 +60,12 @@ public class UserController {
         return ResponseEntity.ok(productList);
     }
 
+    @GetMapping("/searchProducts/{search}")
+    public ResponseEntity<List<Product>> searchProducts(@PathVariable String search) {
+        List<Product> productList = productService.searchProducts(search);
+        return ResponseEntity.ok(productList);
+    }
+
     @PostMapping("/addTocart/{userId}&{productId}")
     public ResponseEntity<String> addToCart(@PathVariable long userId, @PathVariable long productId) {
         try {

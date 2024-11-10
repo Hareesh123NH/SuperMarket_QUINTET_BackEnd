@@ -19,7 +19,7 @@ public class WebConfig  implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://127.0.0.1:5500") // Change to your frontend URL
+                .allowedOrigins("http://127.0.0.1:5500")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
@@ -28,13 +28,13 @@ public class WebConfig  implements WebMvcConfigurer{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500")); // Allow your frontend URL
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
-        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply CORS configuration to all paths
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 

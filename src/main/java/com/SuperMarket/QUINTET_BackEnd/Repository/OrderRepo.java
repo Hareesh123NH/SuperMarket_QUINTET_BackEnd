@@ -28,9 +28,10 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
     //    @Query("Select o from orders where o.order_status <> :orderStatus")
     List<Order> findAllByorderStatusNot(String orderStatus);
 
+    @Query("SELECT o FROM Order o WHERE " +
+            "LOWER(o.user.userProfile.fullName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(o.product.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(o.product.category) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Order> searchOrdersByUsernamePName(@Param("query") String query);
 
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE Order o SET o.orderStatus = 'BillGenerated' WHERE o.id = :id")
-//    void updateOrderStatusToBillGeneratedById(@Param("id") long id);
 }

@@ -19,6 +19,7 @@ public class Order {
 
     private int quantity;
 
+    //    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

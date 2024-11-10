@@ -37,6 +37,12 @@ public class EmpController {
         return ResponseEntity.ok(productList);
     }
 
+    @GetMapping("/searchProducts/{search}")
+    public ResponseEntity<List<Product>> searchProductsEMp(@PathVariable String search) {
+        List<Product> productList = productRepo.searchByNameOrCategory(search);
+        return ResponseEntity.ok(productList);
+    }
+
     @GetMapping("/getcategory/{category}")
     public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String category) {
         List<Product> productList = productRepo.findAllBycategory(category);
@@ -81,17 +87,16 @@ public class EmpController {
         return ResponseEntity.ok("Updated Successfully");
     }
 
-//    @DeleteMapping("/removeProduct/{productId}")
-//    public ResponseEntity<String> removeProduct(@PathVariable long productId) {
-//        Product product = productRepo.getReferenceById(productId);
-//
-//        productRepo.delete(product);
-//        return ResponseEntity.ok("Removed Successfully");
-//    }
-@GetMapping("/allBills")
-public ResponseEntity<List<Bills>> getAllBills() {
-    List<Bills> billList = billRepo.findAll();
-    return ResponseEntity.ok(billList);
-}
+    @GetMapping("/allBills")
+    public ResponseEntity<List<Bills>> getAllBills() {
+        List<Bills> billList = billRepo.findAll();
+        return ResponseEntity.ok(billList);
+    }
+
+    @GetMapping("/searchBills/{search}")
+    public ResponseEntity<List<Bills>> searchBills(@PathVariable String search) {
+        List<Bills> billList = billRepo.searchByCustomerNameOrProductDetails(search);
+        return ResponseEntity.ok(billList);
+    }
 
 }

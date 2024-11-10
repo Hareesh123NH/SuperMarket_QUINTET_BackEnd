@@ -27,4 +27,8 @@ public class ProductService {
     public void save(Product product){
         productRepo.save(product);
     }
+
+    public List<Product> searchProducts(String search) {
+        return productRepo.searchByNameOrCategory(search);
+    }
 }
