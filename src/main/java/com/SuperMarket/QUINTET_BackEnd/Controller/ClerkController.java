@@ -131,5 +131,4 @@ public class ClerkController {
         return ResponseEntity.ok("Order Deleted Successfully");
     }
 
-
 }
